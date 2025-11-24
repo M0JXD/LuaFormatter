@@ -131,7 +131,9 @@ functiondef: FUNCTION funcbody;
 
 funcbody: LP parlist? RP block END;
 
-parlist: namelist (COMMA ELLIPSIS)? | ELLIPSIS;
+parlist: namelist (COMMA varargparam)? | varargparam;
+
+varargparam: ELLIPSIS NAME?;
 
 tableconstructor: LB fieldlist? RB;
 

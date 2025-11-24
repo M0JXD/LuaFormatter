@@ -85,6 +85,8 @@ public:
 
     virtual antlrcpp::Any visitParlist(LuaParser::ParlistContext *context) = 0;
 
+    virtual antlrcpp::Any visitVarargparam(LuaParser::VarargparamContext *context) = 0;
+
     virtual antlrcpp::Any visitTableconstructor(LuaParser::TableconstructorContext *context) = 0;
 
     virtual antlrcpp::Any visitFieldlist(LuaParser::FieldlistContext *context) = 0;

@@ -147,6 +147,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitVarargparam(LuaParser::VarargparamContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitTableconstructor(LuaParser::TableconstructorContext *ctx) override {
     return visitChildren(ctx);
   }

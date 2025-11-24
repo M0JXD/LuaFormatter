@@ -1526,7 +1526,7 @@ antlrcpp::Any FormatVisitor::visitFuncbody(LuaParser::FuncbodyContext* ctx) {
     return nullptr;
 }
 
-// namelist (COMMA ELLIPSIS)? | ELLIPSIS
+// namelist (COMMA varargparam)? | varargparam
 antlrcpp::Any FormatVisitor::visitParlist(LuaParser::ParlistContext* ctx) {
     LOG_FUNCTION_BEGIN();
     if (ctx->namelist() != nullptr) {
@@ -1535,10 +1535,16 @@ antlrcpp::Any FormatVisitor::visitParlist(LuaParser::ParlistContext* ctx) {
             cur_writer() << commentAfter(ctx->namelist(), "");
             cur_writer() << ctx->COMMA()->getText();
             cur_writer() << commentAfter(ctx->COMMA(), " ");
-            cur_writer() << ctx->ELLIPSIS()->getText();
+            cur_writer() << ctx->varargparam()->ELLIPSIS()->getText();
+            if (ctx->varargparam()->NAME() != nullptr) {
+                cur_writer() << ctx->varargparam()->NAME()->getText();
+            }
         }
     } else {
-        cur_writer() << ctx->ELLIPSIS()->getText();
+        cur_writer() << ctx->varargparam()->ELLIPSIS()->getText();
+        if (ctx->varargparam()->NAME() != nullptr) {
+            cur_writer() << ctx->varargparam()->NAME()->getText();
+        }
     }
     LOG_FUNCTION_END();
     return nullptr;
