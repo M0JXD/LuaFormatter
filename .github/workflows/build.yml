@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+  # Run once per day at 03:00 UTC
+  schedule:
+    - cron: "0 3 * * *"
+
 jobs:
   build-linux:
     name: Build (Linux / GCC)
@@ -21,13 +25,16 @@ jobs:
           sudo apt-get install -y cmake build-essential
 
       - name: Configure
-        run: cmake . -DBUILD_TESTS=OFF -DCOVERAGE=OFF
+        run: |
+          cmake . \
+            -DBUILD_TESTS=OFF \
+            -DCOVERAGE=OFF
 
       - name: Build
-        run: make -j$(nproc)
+        run: cmake --build . --parallel
 
       - name: Install
-        run: sudo make install
+        run: sudo cmake --install .
 
 
   build-windows:
@@ -52,14 +59,17 @@ jobs:
           install: >
             mingw-w64-x86_64-gcc
             mingw-w64-x86_64-cmake
-            mingw-w64-x86_64-make
             git
 
       - name: Configure
-        run: cmake .
+        run: |
+          cmake . \
+            -G "MinGW Makefiles" \
+            -DBUILD_TESTS=OFF \
+            -DCOVERAGE=OFF
 
       - name: Build
-        run: make -j$(nproc)
+        run: cmake --build . --parallel
 
       - name: Install
-        run: make install
+        run: cmake --install .
