@@ -87,3 +87,38 @@ jobs:
         with:
           name: luaformatter-windows
           path: install/
+
+
+  build-macos:
+    name: Build (macOS / Clang)
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies (Homebrew)
+        run: |
+          brew update
+          brew install cmake
+
+      - name: Configure
+        run: |
+          cmake . \
+            -DBUILD_TESTS=OFF \
+            -DCOVERAGE=OFF
+
+      - name: Build
+        run: cmake --build . --parallel
+
+      - name: Install
+        run: |
+          cmake --install . --prefix install
+
+      - name: Upload artefacts (macOS)
+        uses: actions/upload-artifact@v4
+        with:
+          name: luaformatter-macos
+          path: install/
