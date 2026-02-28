@@ -1,0 +1,65 @@
+name: Build LuaFormatter
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-linux:
+    name: Build (Linux / GCC)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential
+
+      - name: Configure
+        run: cmake .
+
+      - name: Build
+        run: make -j$(nproc)
+
+      - name: Install
+        run: sudo make install
+
+
+  build-windows:
+    name: Build (Windows / MSYS2)
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: Checkout repository (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-make
+            git
+
+      - name: Configure
+        run: cmake .
+
+      - name: Build
+        run: make -j$(nproc)
+
+      - name: Install
+        run: make install
