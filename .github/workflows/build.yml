@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
 
-  # Run once per day at 03:00 UTC
+  # Daily at 03:00 UTC
   schedule:
     - cron: "0 3 * * *"
 
@@ -34,7 +34,14 @@ jobs:
         run: cmake --build . --parallel
 
       - name: Install
-        run: sudo cmake --install .
+        run: |
+          sudo cmake --install . --prefix install
+
+      - name: Upload artefacts (Linux)
+        uses: actions/upload-artifact@v4
+        with:
+          name: luaformatter-linux
+          path: install/
 
 
   build-windows:
@@ -59,12 +66,12 @@ jobs:
           install: >
             mingw-w64-x86_64-gcc
             mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-make
             git
 
       - name: Configure
         run: |
           cmake . \
-            -G "MinGW Makefiles" \
             -DBUILD_TESTS=OFF \
             -DCOVERAGE=OFF
 
@@ -72,4 +79,11 @@ jobs:
         run: cmake --build . --parallel
 
       - name: Install
-        run: cmake --install .
+        run: |
+          cmake --install . --prefix install
+
+      - name: Upload artefacts (Windows)
+        uses: actions/upload-artifact@v4
+        with:
+          name: luaformatter-windows
+          path: install/
